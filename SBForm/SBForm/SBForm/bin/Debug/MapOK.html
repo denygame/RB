@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- sửa lỗi map -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">					
+<title>Untitled Document</title>
+
+<style type="text/css">
+html, body {height: 100%;margin: 0;padding: 0;}
+#googleMap{width:100%;height:100%;}
+</style>
+</head>
+
+
+
+<body>
+
+    <div id="googleMap" valign="top"></div>
+
+   
+
+
+
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=#{AIzaSyDcHL9y2CehGJqvAsCvHHY5W6ORcVxI7qU}&sensor=false"></script>
+
+<script type="text/javascript">
+	var map;
+	var toado=[];
+	var poly = [];
+	var Path;
+	var marker;
+		function add(text){
+					toado=[];
+					poly=[];
+					initialize();	// load lại bản đồ. xóa polyline cũ, không là còn
+					var lines = text.split(/[\r\n]+/g); //cắt từng dòng 
+					for(var i=0;i<lines.length;i++)
+					{
+						if(lines[i]!="//")
+						{
+							toado.push(Number(lines[i]));	
+						}
+					}
+					Draw();
+		}
+	
+	
+	
+		//hàm mở đầu
+ 		function initialize()
+		{
+			var mapOptions = {
+				//-- tam ban do 
+				center:new google.maps.LatLng(10.885213,106.651882),
+				zoom:14,
+				mapTypeId:google.maps.MapTypeId.ROADMAP
+			};
+			 map=new google.maps.Map(document.getElementById("googleMap"),mapOptions);
+			 
+			 //marker cho trường
+			 marker = new google.maps.Marker({
+                map:map,
+                position: new google.maps.LatLng(10.885213,106.651882)
+            });
+            google.maps.event.addListener(marker, 'click', chuyenDongMarker);
+            var infowindow = new google.maps.InfoWindow({
+                content: "<b>School</b>"
+            });
+			google.maps.event.addListener(marker, 'click', function () {
+                infowindow.open(map, marker);
+            });
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
+
+		function chuyenDongMarker() {
+					if (marker.getAnimation() !== null) {
+						marker.setAnimation(null);
+					}
+					else {
+						marker.setAnimation(google.maps.Animation.BOUNCE);
+					}
+				}
+				
+				
+				
+				
+		function Draw(){
+			for (var j=0;j<toado.length;j=j+2){
+        			var pos = new google.maps.LatLng(toado[j],toado[j+1])
+        			poly.push(pos);
+    				}			
+    		
+			Path = new google.maps.Polyline({
+			path: poly,
+			geodesic: true,
+			strokeColor: '#ff004c',
+			strokeOpacity: 1.0,
+			strokeWeight: 5
+			});			
+				
+			Path.setMap(map);
+    	}
+</script>
+</body>
+</html>
